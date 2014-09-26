@@ -24,10 +24,10 @@
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>-6.2697382008369829e-12</real>
-				<real>2.1266178362113569e-38</real>
-				<real>-3.6049365646789797e-23</real>
-				<real>6.5858516696418332e-38</real>
+				<real>-4.9900205495445604e-12</real>
+				<real>-1.4964742648001433e-24</real>
+				<real>0.0</real>
+				<real>0.0</real>
 			</array>
 			<key>editorTextStorage</key>
 			<string>{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf400
@@ -84,7 +84,7 @@
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>7.8787053273707099e-38</real>
+				<real>4.9824074940473753e-38</real>
 				<real>5.6051938572992683e-45</real>
 				<real>1.4012984643248171e-45</real>
 				<real>0.0</real>
@@ -144,7 +144,7 @@
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>7.8787053273707099e-38</real>
+				<real>4.9824074940473753e-38</real>
 				<real>5.6051938572992683e-45</real>
 				<real>1.4012984643248171e-45</real>
 				<real>0.0</real>
@@ -204,7 +204,7 @@
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>7.8787053273707099e-38</real>
+				<real>4.9824074940473753e-38</real>
 				<real>5.6051938572992683e-45</real>
 				<real>1.4012984643248171e-45</real>
 				<real>0.0</real>
@@ -264,7 +264,7 @@
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>7.8787053273707099e-38</real>
+				<real>4.9824074940473753e-38</real>
 				<real>5.6051938572992683e-45</real>
 				<real>1.4012984643248171e-45</real>
 				<real>0.0</real>
@@ -324,7 +324,7 @@
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>7.8710284538637528e-38</real>
+				<real>5.0031511954744685e-38</real>
 				<real>1.1210387714598537e-44</real>
 				<real>8.4077907859489024e-45</real>
 				<real>0.0</real>
@@ -384,7 +384,7 @@
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>7.8710284538637528e-38</real>
+				<real>5.0031511954744685e-38</real>
 				<real>1.1210387714598537e-44</real>
 				<real>8.4077907859489024e-45</real>
 				<real>0.0</real>
@@ -444,7 +444,7 @@
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>7.8710284538637528e-38</real>
+				<real>5.0031511954744685e-38</real>
 				<real>1.1210387714598537e-44</real>
 				<real>8.4077907859489024e-45</real>
 				<real>0.0</real>
@@ -590,7 +590,7 @@ Private Bag 92019, Auckland 1142}</string>
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>7.8710284538637528e-38</real>
+				<real>5.0031511954744685e-38</real>
 				<real>2.2420775429197073e-44</real>
 				<real>1.0440234078605617e-40</real>
 				<real>-4.9900829995896956e-12</real>
@@ -639,10 +639,10 @@ Private Bag 92019, Auckland 1142}</string>
 			<true/>
 			<key>bounds</key>
 			<array>
-				<real>200.00364685058594</real>
-				<real>768.80792236328125</real>
-				<real>335</real>
-				<real>12</real>
+				<real>200.90330505371094</real>
+				<real>759.905029296875</real>
+				<real>333</real>
+				<real>24</real>
 			</array>
 			<key>drawsFill</key>
 			<false/>
@@ -650,10 +650,10 @@ Private Bag 92019, Auckland 1142}</string>
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>7.8710284538637528e-38</real>
-				<real>2.2420775429197073e-44</real>
-				<real>1.0440234078605617e-40</real>
-				<real>-4.9900829995896956e-12</real>
+				<real>451.384521484375</real>
+				<real>1997.5084228515625</real>
+				<real>732</real>
+				<real>2.197021484375</real>
 			</array>
 			<key>editorTextStorage</key>
 			<string>{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf400
@@ -661,7 +661,7 @@ Private Bag 92019, Auckland 1142}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\f0\fs20 \cf0 Particle Filtering Methods for Bayesian Inference of Cophylogenies}</string>
+\f0\fs20 \cf0 Implementing Hamiltonian Monte Carlo for Efficient Bayesian Evolutionary Analysis. (Please see attached proposal for details.)}</string>
 			<key>fillColor</key>
 			<data>
 			BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2Jq
@@ -699,69 +699,9 @@ Private Bag 92019, Auckland 1142}</string>
 			<true/>
 			<key>bounds</key>
 			<array>
-				<real>199.17617797851562</real>
-				<real>755.4320068359375</real>
-				<real>217</real>
-				<real>12</real>
-			</array>
-			<key>drawsFill</key>
-			<false/>
-			<key>drawsStroke</key>
-			<false/>
-			<key>editorFrame</key>
-			<array>
-				<real>7.8710284538637528e-38</real>
-				<real>2.2420775429197073e-44</real>
-				<real>1.0440234078605617e-40</real>
-				<real>-4.9900829995896956e-12</real>
-			</array>
-			<key>editorTextStorage</key>
-			<string>{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf400
-\cocoascreenfonts1{\fonttbl\f0\fnil\fcharset0 CMUTypewriter-Regular;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
-
-\f0\fs20 \cf0 (Please see attached proposal for details.)}</string>
-			<key>fillColor</key>
-			<data>
-			BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2Jq
-			ZWN0AIWEAWMBhARmZmZmAQAAAYY=
-			</data>
-			<key>hideWhenPrinting</key>
-			<false/>
-			<key>knobMask</key>
-			<integer>24</integer>
-			<key>lineWidth</key>
-			<real>1</real>
-			<key>naturalBounds</key>
-			<array>
-				<real>213.99102783203125</real>
-				<real>759.24273681640625</real>
-				<real>1</real>
-				<real>1</real>
-			</array>
-			<key>page</key>
-			<integer>1</integer>
-			<key>strokeColor</key>
-			<data>
-			BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2Jq
-			ZWN0AIWEAWMDhAJmZgABhg==
-			</data>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>Graphic Class</key>
-			<string>TextArea</string>
-			<key>autoSizedX</key>
-			<true/>
-			<key>autoSizedY</key>
-			<true/>
-			<key>bounds</key>
-			<array>
 				<real>203.42269897460938</real>
-				<real>145.385498046875</real>
-				<real>287</real>
+				<real>145.38543701171875</real>
+				<real>282</real>
 				<real>12</real>
 			</array>
 			<key>drawsFill</key>
@@ -770,10 +710,10 @@ Private Bag 92019, Auckland 1142}</string>
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>7.8710284538637528e-38</real>
-				<real>2.2420775429197073e-44</real>
-				<real>1.0440234078605617e-40</real>
-				<real>-4.9900829995896956e-12</real>
+				<real>456.91961669921875</real>
+				<real>1514.097900390625</real>
+				<real>3</real>
+				<real>2.197021484375</real>
 			</array>
 			<key>editorTextStorage</key>
 			<string>{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf400
@@ -781,7 +721,7 @@ Private Bag 92019, Auckland 1142}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\f0\fs20 \cf0 Letters of reference emailed directly to Lorraine Bergen.}</string>
+\f0\fs20 \cf0 Letter of reference emailed directly to Lorraine Bergen.}</string>
 			<key>fillColor</key>
 			<data>
 			BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2Jq
@@ -830,10 +770,10 @@ Private Bag 92019, Auckland 1142}</string>
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>7.8710284538637528e-38</real>
+				<real>456.91961669921875</real>
 				<real>2.2420775429197073e-44</real>
-				<real>1.0440234078605617e-40</real>
-				<real>-4.9900829995896956e-12</real>
+				<real>3</real>
+				<real>2.197021484375</real>
 			</array>
 			<key>editorTextStorage</key>
 			<string>{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf400
@@ -890,10 +830,10 @@ Private Bag 92019, Auckland 1142}</string>
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>348.14083862304688</real>
-				<real>1648.9180908203125</real>
-				<real>2</real>
-				<real>1.68994140625</real>
+				<real>456.91961669921875</real>
+				<real>2.2420775429197073e-44</real>
+				<real>3</real>
+				<real>2.197021484375</real>
 			</array>
 			<key>editorTextStorage</key>
 			<string>{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf400
@@ -950,10 +890,10 @@ Private Bag 92019, Auckland 1142}</string>
 			<false/>
 			<key>editorFrame</key>
 			<array>
-				<real>350.58041381835938</real>
-				<real>1778.570068359375</real>
-				<real>2</real>
-				<real>1.68994140625</real>
+				<real>456.91961669921875</real>
+				<real>2.2420775429197073e-44</real>
+				<real>3</real>
+				<real>2.197021484375</real>
 			</array>
 			<key>editorTextStorage</key>
 			<string>{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf400

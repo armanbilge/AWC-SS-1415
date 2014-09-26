@@ -1,0 +1,33 @@
+\documentclass{article}
+
+\usepackage[backend=biber,style=alphabetic]{biblatex}
+\addbibresource{../hmc.bib}
+
+\usepackage{acronym}
+\acrodef{HMC}{Hamiltonian Monte Carlo}
+\acrodef{MCMC}{Markov chain Monte Carlo}
+
+\title{Implementing \acl{HMC} for Efficient Bayesian Evolutionary Analysis}
+\author{Arman Bilge \\ \texttt{armanbilge@gmail.com}}
+\date{29th September 2014}
+
+\frenchspacing
+\begin{document}
+
+    \maketitle
+
+    The use of \ac{MCMC} methods is ubiquitous for sophisticated evolutionary
+        analyses.
+
+    The principal goal of this project is to demonstrate that an implementation
+        of \ac{HMC} for Bayesian evolutionary analysis can provide a clear
+        advantage over existing \ac{MCMC} methods.
+    Because
+
+    \section*{Overview of the \ac{HMC} algorithm}
+
+    Ultimately, an \ac{HMC} implementation for phylogenetics must be capable of
+        efficiently traversing the treespace, particularly with respect to
+        topology.
+
+\end{document}
