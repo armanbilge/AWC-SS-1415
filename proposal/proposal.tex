@@ -1,4 +1,6 @@
 \documentclass{article}
+\usepackage[british]{babel}
+\usepackage{csquotes}
 
 \usepackage[backend=biber,style=alphabetic]{biblatex}
 \addbibresource{../hmc.bib}
@@ -7,7 +9,8 @@
 \acrodef{HMC}{Hamiltonian Monte Carlo}
 \acrodef{MCMC}{Markov chain Monte Carlo}
 
-\title{Implementing \acl{HMC} for Efficient Bayesian Evolutionary Analysis}
+\title{Implementing \acl{HMC} for Efficient Bayesian Evolutionary Analysis \\
+           \Large\textsc{awc summer scholarship proposal}}
 \author{Arman Bilge \\ \texttt{armanbilge@gmail.com}}
 \date{29th September 2014}
 
@@ -16,18 +19,50 @@
 
     \maketitle
 
-    The use of \ac{MCMC} methods is ubiquitous for sophisticated evolutionary
-        analyses.
+    \paragraph{Introduction.}
+    Today, the use of \ac{MCMC} methods is ubiquitous to software for the
+        evolutionary analysis of molecular data.
+    In particular, Bayesian statistical inference via \ac{MCMC} has transformed
+        the field of phylogenetics by enabling the use of complex models for
+        studying evolutionary processes, including molecular evolution,
+        demographics, genome evolution, biogeography, speciation, and epidemic
+        outbreaks.
+    However, the substantial number of variables associated with these complex
+        models dramatically increases the dimensionality of the overall
+        model space, resulting in poor performance of the standard
+        Metropolis--Hastings MCMC algorithm \cite{Met+53,Has70}.
+    The \ac{MCMC} algorithm utilises a random walk to draw samples from the
+        model space relative to their posterior probability.
+    As the number of dimensions increases, so does the number of steps, or
+        perturbations to the model, that are necessary to draw a
+        pseudo-independent sample.
+%   Furthermore, often the rate at which proposed steps are rejected (due to
+%       low posterior probability) will also increase.
+    Here, I propose the evaluation of an alternative algorithm, \ac{HMC} (also
+        often referred to as Hybrid Monte Carlo), designed to address this
+        shortcoming of \ac{MCMC} in the context of evolutionary analysis.
 
+    \paragraph*{The \ac{HMC} algorithm.}
+
+    While the \ac{HMC} algorithm has demonstrably better performance relative
+        to standard \ac{MCMC} for specific examples, it is unlikely that this
+        will hold true in general.
+    Therefore, it becomes important to evaluate the potential benefits of
+        \ac{HMC} versus \ac{MCMC} for particular types of problems.
+
+    \paragraph*{The project.}
     The principal goal of this project is to demonstrate that an implementation
-        of \ac{HMC} for Bayesian evolutionary analysis can provide a clear
-        advantage over existing \ac{MCMC} methods.
-    Because
+        of \ac{HMC} for Bayesian evolutionary analysis
 
-    \section*{Overview of the \ac{HMC} algorithm}
-
+    \paragraph*{Concluding remarks.}
+    Should my \ac{HMC} implementation show promising results for inference on
+        fixed topologies, the next steps will be to move towards a more
+        complete implementation.
     Ultimately, an \ac{HMC} implementation for phylogenetics must be capable of
         efficiently traversing the treespace, particularly with respect to
         topology.
+    Developing a method capapable of this would likely
+
+    \printbibliography
 
 \end{document}
