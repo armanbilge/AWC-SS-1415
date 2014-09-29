@@ -3,12 +3,14 @@
 \usepackage{csquotes}
 
 \usepackage[backend=biber,style=alphabetic]{biblatex}
-\addbibresource{../hmc.bib}
+\addbibresource{\jobname.bib}
 
 \usepackage{acronym}
 \acrodef{AWC}{Allan Wilson Centre}
+\acrodef{ESS}{estimated sample size}
 \acrodef{HMC}{Hamiltonian Monte Carlo}
 \acrodef{MCMC}{Markov chain Monte Carlo}
+\acrodef{ODE}{ordinary differential equation}
 
 \title{Implementing \acl{HMC} for Efficient Bayesian Evolutionary Analysis \\
            \Large\textsc{awc summer scholarship proposal}}
@@ -29,25 +31,24 @@
         studying evolutionary processes, including molecular evolution,
         demographics, genome evolution, biogeography, speciation, and
         epidemics.
-    However, the substantial number of variables associated with these complex
+    However, the growing number of variables associated with these complex
         models increases the dimensionality of the complete model space,
         resulting in poor performance of the standard Metropolis--Hastings MCMC
-        algorithm.
-    The \ac{MCMC} algorithm utilises a random walk to draw samples from the
-        model space at a frequency relative to their posterior probability.
+        algorithm, which utilises a random walk to draw samples from the model
+        space at a frequency relative to their posterior
+        probability~\cite{Met+53,Has70}.
     As the number of dimensions increases, so does the number of steps, or
-        perturbations to the model, that are necessary to draw a
-        pseudo-independent sample.
-%   Furthermore, often the rate at which proposed steps are rejected (due to
-%       low posterior probability) will also increase.
-    Here, I propose the evaluation of an alternative algorithm, \ac{HMC} (also
-        referred to as hybrid Monte Carlo), in the context of evolutionary
-        analysis.
+        perturbations to the model state, that are necessary to draw a
+        pseudo-independent sample and often the rate at which proposed steps
+        are rejected.
     An effort to improve on the widely-used \ac{MCMC} algorithm is well-aligned
         with the \acl{AWC}'s \emph{Imaging Evolution} initiative \enquote{to
         develop novel mathematical techniques and software for evolutionary
         genetic analysis} and will undoubtedly enhance the analysis process
-        across several fields.
+        across several areas of biology.
+    Here, I propose the evaluation of an alternative algorithm, \ac{HMC} (also
+        referred to as hybrid Monte Carlo)~\cite{Nea11}, in the context of
+        evolutionary analysis.
 
     \paragraph*{The \ac{HMC} algorithm.}
 
@@ -57,50 +58,66 @@
     In the analogy, we liken the probability density of our current state to
         the potential energy of the system.
     Additionally, we augment our state with a momentum variable for every
-        variable of interest, and we consider the probability density of these
+        variable in our model, and we consider the probability density of these
         momentum variables (typically independent normal distributions) the
         kinetic energy of the system.
-    Proposals are made by drawing random momentum variables and simulating the
-        dynamics for some fixed amount of time; the resulting state is the
-        proposal.
+    Proposals are made by drawing random values for the momentum variables
+        and simulating the dynamics for some fixed amount of time.
+
     Fundamentally, the \ac{HMC} algorithm may be thought of as an intelligent
         proposal mechanism, or operator, embedded within a standard \ac{MCMC}
         analysis.
     In fact, several properties of Hamiltonian dynamics, such as its
         reversibility, conservation of energy, and symplecticness, make it a
-        particularly desirable operator.
+        particularly desirable operator \cite{Nea11}.
     For example, because conservation of energy is equivalent to the
         conservation of probability density by our analogy, it implies that the
-        probability density of the proposed state equals that of the current
-        such that, in theory, this operator will have an acceptance rate of
-        100\%.
+        probability density of a proposed state equals that of the current
+        such that, in theory, this operator will have an acceptance probability
+        of one.
+    Conveniently, multiple variables are updated simultaneously in a single
+        Hamiltonian proposal; to achieve the equivalent under a standard
+        \ac{MCMC} scheme requires the implementation of special operators.
 
-    Additionally, multiple variables are updated at once
-
-    To simulate the dynamics
-    However, a shortcoming of the \ac{HMC} proposal strategy is that it cannot
-        operate on discrete spaces (e.g., tree topologies).
-    Fortunately, it is possible to combine standard \ac{MCMC} updates for
+    Simulation of these Hamiltonian dynamics relies on the solution to a system
+        of coupled \acp{ODE}, where one of these equations is the partial
+        derivative of the posterior density against every variable in the
+        model.
+    There are a number of numerical schemes available to approximate the
+        solution~\cite{Nea11}.
+    Note that because discrete spaces (e.g., tree topologies) are
+        non-differentiable, the \ac{HMC} proposal strategy cannot operate on
+        them.\footnote{It is possible to combine standard \ac{MCMC} updates for
         discrete variables with \ac{HMC}, although obviously the advantages of
-        \ac{HMC} are lost for them.
+        inference under \ac{HMC} do not apply to them.}
+
     While the \ac{HMC} algorithm has demonstrably better performance relative
-        to standard \ac{MCMC} for specific examples, it is unlikely that this
-        will hold true in general.
+        to standard \ac{MCMC} for specific examples \cite{Nea11}, it is
+        unlikely that this will hold true in general.
     Therefore, it becomes important to evaluate the potential benefits of
-        \ac{HMC} relative to \ac{MCMC} for particular types of problems.
+        \ac{HMC} relative to \ac{MCMC} for particular types of problems and
+        recognise the fine-tuning necessary to enjoy this enhanced performance.
 
     \paragraph*{The project.}
 
     The principal goal of this project is to demonstrate that an implementation
         of \ac{HMC} for Bayesian evolutionary analysis offers a practical
         advantage over existing \ac{MCMC} methods.
-    Because
-    Three important considerations for this project will be determining
-        efficient methods to compute or approximate the partial derivatives of
-        the posterior distribution with regard to the variables of interest,
-        optimising the tuning parameters of the \ac{HMC} algorithm particularly
-        for evolutionary analysis, and developing a modular implementation of
-        the algorithm in an existing software package.
+    Because of the challenges of sampling from discrete spaces, I will focus on
+        the inference of parameters on fixed trees for a set of popular, core
+        models, including DNA substitution models, the coalescent and
+        birth--death models, and molecular clock models.
+    The important considerations will be determining efficient methods to
+        compute or approximate the partial derivatives of the posterior
+        distribution with regard to the model variables, optimising the tuning
+        parameters of the \ac{HMC} algorithm particularly for evolutionary
+        analysis, and developing a modular implementation of the algorithm in
+        an existing software package.
+    To evaluate its efficiency against standard \ac{MCMC}, I will compare the
+        \ac{ESS} per CPU-hour of my implementation against that of other
+        popular softwares for Bayesian phylogenetic inference, i.e.,
+        MrBayes~\cite{RH03} and BEAST~\cite{Dru+12,Bou+14}, under the same
+        model.
 
     Should my \ac{HMC} implementation show promising results for inference on
         fixed topologies, the next steps will be to move towards a more
@@ -108,7 +125,9 @@
     Ultimately, an \ac{HMC} implementation for phylogenetics must be capable of
         efficiently traversing the treespace, particularly with respect to
         topology.
-    Developing a method capapable of this would likely
+    Developing a method capapable of this would likely have an impact wider
+        than simply the evolutionary biology community, as to-date there are no
+        \ac{HMC} implementations that can sample these discrete spaces.
 
     \printbibliography
 
