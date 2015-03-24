@@ -1,0 +1,71 @@
+\documentclass{article}
+\usepackage[british]{babel}
+\usepackage{csquotes}
+
+\usepackage[backend=biber,style=alphabetic]{biblatex}
+\addbibresource{\jobname.bib}
+
+\usepackage{acronym}
+\acrodef{ESS}{effective sample size}
+\acrodef{HMC}{Hamiltonian Monte Carlo}
+\acrodef{MCMC}{Markov chain Monte Carlo}
+\acrodef{ODE}{ordinary differential equation}
+
+\usepackage{mathtools}
+\newcommand{\dd}{\; \mathrm{d}}
+\renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\mat}[1]{\ensuremath{\mathbf{#1}}}
+
+\title{Implementing \acl{HMC} for Efficient Bayesian Evolutionary Analysis \\
+           \Large\textsc{awc summer scholarship report}}
+\author{Arman Bilge \\ \texttt{armanbilge@gmail.com}}
+\date{27th March 2015}
+
+\frenchspacing
+\begin{document}
+
+    \maketitle
+
+    \paragraph{Introduction.}
+
+
+
+    Bayesian evolutionary analysis is centered around the posterior probability
+        of a phylogenetic tree~$T$ given the molecular sequence
+        data~$D$~\cite{Bou+14}, which is defined by
+        \begin{equation}
+            P\left(T \mid D\right)
+                \propto \int_\theta P\left(D \mid T,\theta\right)
+                P\left(T \mid \theta\right) P\left(\theta\right) \dd\theta
+        \end{equation}
+        where $\theta$ is a vector of nuisance parameters for the model.
+    Because there is no closed-form expression for this multidimensional
+        integral,
+
+
+    As the amount of molecular data grows, as does the complexity of the models
+        used to analyse them, the large dimensionality of the statespace makes
+        evaluating this integral computationally intractable.
+
+    \ac{HMC}, first described as hybrid Monte Carlo by \textcite{Dua+87},
+
+    \paragraph{Methods.}
+
+    Let $\pi\left(\vec{q}\right)$ be the target probability density.
+    We augment the state space with momentum $\vec{p}$ and define the
+        Hamiltonian for our system as
+        \begin{equation}
+            H\left(\vec{q},\vec{p}\right)
+            = U\left(\vec{q}\right) + K\left(\vec{p}\right)
+        \end{equation}
+        with the potential energy
+        $U\left(\vec{q}\right) = -\log{\pi\left(\vec{q}\right)}$ and kinetic
+        energy $K\left(\vec{p}\right) = \frac{1}{2} \vec{p}^T \mat{M} \vec{p}$,
+        where $\mat{M}$ is the mass matrix.
+    To describe the \ac{HMC} algorithm, I introduce three operators:
+
+    \paragraph{Results and discussion.}
+
+    \printbibliography
+
+\end{document}
