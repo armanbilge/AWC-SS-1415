@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage[british]{babel}
 \usepackage{csquotes}
+\usepackage{hyperref}
 
 \usepackage[backend=biber,style=alphabetic]{biblatex}
 \addbibresource{\jobname.bib}
@@ -26,22 +27,20 @@
 
     \maketitle
 
-    \paragraph{Introduction.}
-
-
+    \subsection*{Introduction}
 
     Bayesian evolutionary analysis is centered around the posterior probability
-        of a phylogenetic tree~$T$ given the molecular sequence
+        distribution of a phylogenetic tree~$T$ given the molecular sequence
         data~$D$~\cite{Bou+14}, which is defined by
         \begin{equation}
-            P\left(T \mid D\right)
-                \propto \int_\theta P\left(D \mid T,\theta\right)
-                P\left(T \mid \theta\right) P\left(\theta\right) \dd\theta
+            p\left(T \mid D\right)
+                \propto \int_\theta p\left(D \mid T,\theta\right)
+                p\left(T \mid \theta\right) p\left(\theta\right) \dd\theta
         \end{equation}
         where $\theta$ is a vector of nuisance parameters for the model.
-    Because there is no closed-form expression for this multidimensional
-        integral,
-
+    Although there is no closed-form expression for this integral, sampling
+        strategies utilising Monte Carlo techniques,  have been quite
+        successful~\cite{RH03,Dru+12,Bou+14}.
 
     As the amount of molecular data grows, as does the complexity of the models
         used to analyse them, the large dimensionality of the statespace makes
@@ -49,7 +48,7 @@
 
     \ac{HMC}, first described as hybrid Monte Carlo by \textcite{Dua+87},
 
-    \paragraph{Methods.}
+    \subsection*{Methods}
 
     Let $\pi\left(\vec{q}\right)$ be the target probability density.
     We augment the state space with momentum $\vec{p}$ and define the
@@ -61,10 +60,29 @@
         with the potential energy
         $U\left(\vec{q}\right) = -\log{\pi\left(\vec{q}\right)}$ and kinetic
         energy $K\left(\vec{p}\right) = \frac{1}{2} \vec{p}^T \mat{M} \vec{p}$,
-        where $\mat{M}$ is the mass matrix.
+        where $\mat{M}$ is the mass matrix for the particle (often simply the
+        identity matrix).
+    The system's dynamics are described by Hamilton's equations,
+        \begin{equation}
+            \frac{\dd \vec{q}}{\dd t} = \frac{\partial H}{\partial \vec{p}} \\
+            \frac{\dd \vec{p}}{\dd t} = - \frac{\partial H}{\partial \vec{q}}
+        \end{equation}
     To describe the \ac{HMC} algorithm, I introduce three operators:
 
-    \paragraph{Results and discussion.}
+    I implemented the described \ac{HMC} algorithm in a fork of
+        BEAST~1~\cite{Dru+12}.
+
+    To enable evaluation of the gradient, I introduced a
+        \texttt{Differentiable} interface that defines a method
+        \texttt{differentiate()} that returns the gradient with respect to a
+        variable.
+    The existing \texttt{Likelihood} interface was then modified to extend
+        \texttt{Differentiable}.
+    The source code for my fork is freely available under version 3 of the GNU
+        General Public License at
+        \url{https://github.com/armanbilge/BEAST3/tree/hamilton}.
+
+    \subsection*{Results and Discussion}
 
     \printbibliography
 
