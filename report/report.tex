@@ -7,15 +7,20 @@
 \addbibresource{\jobname.bib}
 
 \usepackage{acronym}
+\acrodef{ACT}{auto-correlation time}
 \acrodef{ESS}{effective sample size}
 \acrodef{HMC}{Hamiltonian Monte Carlo}
 \acrodef{MCMC}{Markov chain Monte Carlo}
 \acrodef{ODE}{ordinary differential equation}
 
 \usepackage{mathtools}
-\newcommand{\dd}{\; \mathrm{d}}
+\newcommand{\dd}{\, \mathrm{d}}
 \renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}}
 \newcommand{\mat}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\op}[1]{\ensuremath{\mathbf{#1}}}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 \title{Implementing \acl{HMC} for Efficient Bayesian Evolutionary Analysis \\
            \Large\textsc{awc summer scholarship report}}
@@ -29,8 +34,9 @@
 
     \subsection*{Introduction}
 
-    Bayesian evolutionary analysis is centered around the posterior probability
-        distribution of a phylogenetic tree~$T$ given the molecular sequence
+    Bayesian evolutionary analysis is centered around sampling from the
+        posterior probability distribution of a phylogenetic tree~$T$ given the
+        molecular sequence
         data~$D$~\cite{Bou+14}, which is defined by
         \begin{equation}
             p\left(T \mid D\right)
@@ -39,8 +45,12 @@
         \end{equation}
         where $\theta$ is a vector of nuisance parameters for the model.
     Although there is no closed-form expression for this integral, sampling
-        strategies utilising Monte Carlo techniques,  have been quite
+        strategies utilising Monte Carlo techniques have been quite
         successful~\cite{RH03,Dru+12,Bou+14}.
+
+    The ideal sampling algorithm maximises the number of pseudo-independent
+        samples, called the \ac{ESS}, present in all of the samples drawn by
+        minimising the \ac{ACT}.
 
     As the amount of molecular data grows, as does the complexity of the models
         used to analyse them, the large dimensionality of the statespace makes
@@ -63,14 +73,46 @@
         where $\mat{M}$ is the mass matrix for the particle (often simply the
         identity matrix).
     The system's dynamics are described by Hamilton's equations,
-        \begin{equation}
-            \frac{\dd \vec{q}}{\dd t} = \frac{\partial H}{\partial \vec{p}} \\
-            \frac{\dd \vec{p}}{\dd t} = - \frac{\partial H}{\partial \vec{q}}
-        \end{equation}
-    To describe the \ac{HMC} algorithm, I introduce three operators:
+        \begin{align}
+            \frac{\dd \vec{q}}{\dd t} &= \frac{\partial H}{\partial \vec{p}} \\
+            \frac{\dd \vec{p}}{\dd t} &= -\frac{\partial H}{\partial \vec{q}},
+        \end{align}
+        which are integrated to find the state at a particular time.
+    Typically this integration is achieved numerically using the leapfrog
+        method, a symplectic integrator~\cite{Nea11}.
+    I use $\op{L}\left\{\vec{q},\vec{p}\right\}$ to denote an operator that
+        maps the state at time~$t$ to the state at time~$t + \epsilon L$, as
+        approximated by $L$~leapfrog steps with stepsize~$\epsilon$.
+    Additionally, the momentum flip operator
+        $\op{F}\left\{\vec{q},\vec{p}\right\} = \left\{\vec{q},-\vec{p}\right\}$.
+
+    \begin{algorithm}
+        \caption{A \ac{MCMC} operator that simulates Hamiltonian dynamics to
+                 make proposals.}
+        \begin{algorithmic}[1]
+        \Function {HamiltonUpdate}{$\left\{\vec{q},\vec{p}\right\}$}
+            \State $\left\{\vec{q}^\prime, \vec{p}^\prime\right\}
+                \leftarrow \op{F}\op{L}\left\{\vec{q},\vec{p}\right\}$
+            \State $a \leftarrow \min\left(1,
+                \exp\left(
+                    H\left(\vec{q}, \vec{p}\right) - H\left(\vec{q}^\prime,
+                        \vec{p}^\prime\right)\right)\right)$
+            \State $\left\{\vec{q},\vec{p}\right\} \leftarrow
+                \begin{cases}
+                    \left\{\vec{q}^\prime, \vec{p}^\prime\right\}
+                        & \text{with probability } a \\
+                    \left\{\vec{q},\vec{p}\right\}
+                        & \text{with probability } 1 - a
+                \end{cases}$
+            \State $\left\{\vec{q},\vec{p}\right\} \leftarrow
+                        \op{R}\op{F}\left\{\vec{q},\vec{p}\right\}$
+            \State \Return $\left\{\vec{q},\vec{p}\right\}$
+        \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
 
     I implemented the described \ac{HMC} algorithm in a fork of
-        BEAST~1~\cite{Dru+12}.
+        BEAST~v1.8~\cite{Dru+12}.
 
     To enable evaluation of the gradient, I introduced a
         \texttt{Differentiable} interface that defines a method
