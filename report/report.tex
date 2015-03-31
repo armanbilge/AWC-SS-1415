@@ -18,6 +18,7 @@
 \renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}}
 \newcommand{\mat}[1]{\ensuremath{\mathbf{#1}}}
 \newcommand{\op}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\norm}{\ensuremath{\mathcal{N}}}
 
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -25,7 +26,7 @@
 \title{Implementing \acl{HMC} for Efficient Bayesian Evolutionary Analysis \\
            \Large\textsc{awc summer scholarship report}}
 \author{Arman Bilge \\ \texttt{armanbilge@gmail.com}}
-\date{27th March 2015}
+\date{1 April 2015}
 
 \frenchspacing
 \begin{document}
@@ -83,12 +84,26 @@
     I use $\op{L}\left\{\vec{q},\vec{p}\right\}$ to denote an operator that
         maps the state at time~$t$ to the state at time~$t + \epsilon L$, as
         approximated by $L$~leapfrog steps with stepsize~$\epsilon$.
-    Additionally, the momentum flip operator
-        $\op{F}\left\{\vec{q},\vec{p}\right\} = \left\{\vec{q},-\vec{p}\right\}$.
+    Additionally, the momentum flip operator gives
+        $\op{F}\left\{\vec{q},\vec{p}\right\}
+         = \left\{\vec{q},-\vec{p}\right\}$.
+    With the $\op{L}$ and $\op{F}$ operators we can reach a discrete set of
+        states along an energy contour (subject only to errors in numerical
+        integration) and therefore the maximum potential energy (i.e., minimum
+        probability density) contour that is reachable is dictated by the
+        kinetic energy of the system.
+    To guarantee ergodicity of the Markov chain, the momentum is randomised
+        after each iteration of the algorithm by
+    \begin{equation}
+        \op{R}\left\{\vec{q},\vec{p}\right\} =
+        \left\{\vec{q}, \sqrt{1-\alpha}\vec{p} + \sqrt{\alpha}\vec{n}\right\},
+        \vec{n} \sim \norm\left(\vec{0}, \mat{M}\right).
+    \end{equation}
 
     \begin{algorithm}
-        \caption{A \ac{MCMC} operator that simulates Hamiltonian dynamics to
-                 make proposals.}
+        \caption{A single iteration of the \acl{HMC} algorithm that uses
+                 Hamiltonian dynamics to make the proposal and the Metropolis
+                 criterion to accept or reject it.}
         \begin{algorithmic}[1]
         \Function {HamiltonUpdate}{$\left\{\vec{q},\vec{p}\right\}$}
             \State $\left\{\vec{q}^\prime, \vec{p}^\prime\right\}
@@ -122,7 +137,7 @@
         \texttt{Differentiable}.
     The source code for my fork is freely available under version 3 of the GNU
         General Public License at
-        \url{https://github.com/armanbilge/BEAST3/tree/hamilton}.
+        \url{https://github.com/armanbilge/B3/tree/hamilton}.
 
     \subsection*{Results and Discussion}
 
