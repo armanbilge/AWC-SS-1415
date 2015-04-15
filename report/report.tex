@@ -15,18 +15,21 @@
 
 \usepackage{mathtools}
 \newcommand{\dd}{\, \mathrm{d}}
-\renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}}
-\newcommand{\mat}[1]{\ensuremath{\mathbf{#1}}}
-\newcommand{\op}[1]{\ensuremath{\mathbf{#1}}}
+\renewcommand{\vec}[1]{\ensuremath{\boldsymbol{\mathbf{#1}}}}
+\newcommand{\mat}[1]{\ensuremath{\boldsymbol{\mathbf{#1}}}}
+\newcommand{\op}[1]{\ensuremath{\boldsymbol{\mathbf{#1}}}}
 \newcommand{\norm}{\ensuremath{\mathcal{N}}}
 
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 
+\usepackage{caption}
+\captionsetup[ruled]{labelsep=period}
+
 \title{Implementing \acl{HMC} for Efficient Bayesian Evolutionary Analysis \\
            \Large\textsc{awc summer scholarship report}}
 \author{Arman Bilge \\ \texttt{armanbilge@gmail.com}}
-\date{1 April 2015}
+\date{16 April 2015}
 
 \frenchspacing
 \begin{document}
@@ -36,34 +39,38 @@
     \subsection*{Introduction}
 
     Bayesian evolutionary analysis is centered around sampling from the
-        posterior probability distribution of a phylogenetic tree~$T$ given the
-        molecular sequence
-        data~$D$~\cite{Bou+14}, which is defined by
+        posterior probability distribution of a phylogenetic
+        tree~$\mathcal{T}$ and model parameters~$\vec\theta$
+        given the molecular sequence data~$\mathcal{D}$~\cite{Bou+14},
+        which by Bayes' theorem is
         \begin{equation}
-            p\left(T \mid D\right)
-                \propto \int_\theta p\left(D \mid T,\theta\right)
-                p\left(T \mid \theta\right) p\left(\theta\right) \dd\theta
+            p\left(\mathcal{T}, \vec\theta \mid \mathcal{D}\right)
+                \propto p\left(\mathcal{D} \mid \mathcal{T},\vec\theta\right)
+                p\left(\mathcal{T} \mid \vec\theta\right) p\left(\vec\theta\right).
         \end{equation}
-        where $\theta$ is a vector of nuisance parameters for the model.
-    Although there is no closed-form expression for this integral, sampling
-        strategies utilising Monte Carlo techniques have been quite
+    Although direct sampling from this distribution is impossible,
+        sampling strategies utilising \ac{MCMC} techniques have been quite
         successful~\cite{RH03,Dru+12,Bou+14}.
+
+    The success of \ac{MCMC}
+
+    An \ac{MCMC} method whose
 
     The ideal sampling algorithm maximises the number of pseudo-independent
         samples, called the \ac{ESS}, present in all of the samples drawn by
         minimising the \ac{ACT}.
 
-    As the amount of molecular data grows, as does the complexity of the models
-        used to analyse them, the large dimensionality of the statespace makes
-        evaluating this integral computationally intractable.
+    Today, the amount of molecular data available grows rapidly, as does the
+        complexity of the models used to analyse them.
 
     \ac{HMC}, first described as hybrid Monte Carlo by \textcite{Dua+87},
 
     \subsection*{Methods}
 
     Let $\pi\left(\vec{q}\right)$ be the target probability density.
-    We augment the state space with momentum $\vec{p}$ and define the
-        Hamiltonian for our system as
+    We can consider a particle in our state space with position given
+        by~$\vec{q}$ and momentum by $\vec{p}$.
+    Then the Hamiltonian for our system is
         \begin{equation}
             H\left(\vec{q},\vec{p}\right)
             = U\left(\vec{q}\right) + K\left(\vec{p}\right)
@@ -71,8 +78,8 @@
         with the potential energy
         $U\left(\vec{q}\right) = -\log{\pi\left(\vec{q}\right)}$ and kinetic
         energy $K\left(\vec{p}\right) = \frac{1}{2} \vec{p}^T \mat{M} \vec{p}$,
-        where $\mat{M}$ is the mass matrix for the particle (often simply the
-        identity matrix).
+        where $\mat{M}$ is a positive-definite matrix that is interpreted as
+        the particle's mass.
     The system's dynamics are described by Hamilton's equations,
         \begin{align}
             \frac{\dd \vec{q}}{\dd t} &= \frac{\partial H}{\partial \vec{p}} \\
