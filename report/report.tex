@@ -1,7 +1,14 @@
 \documentclass{article}
+
+\usepackage[margin=3cm]{geometry}
+\usepackage{setspace}
+
 \usepackage[british]{babel}
 \usepackage{csquotes}
 \usepackage{hyperref}
+
+\usepackage{titling}
+\setlength{\droptitle}{-2cm}
 
 \usepackage[backend=biber,style=alphabetic]{biblatex}
 \addbibresource{\jobname.bib}
@@ -23,15 +30,18 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 
+\usepackage{graphicx}
 \usepackage{caption}
+\usepackage{subcaption}
 \captionsetup[ruled]{labelsep=period}
 
 \title{Implementing \acl{HMC} for Efficient Bayesian Evolutionary Analysis \\
            \Large\textsc{awc summer scholarship report}}
 \author{Arman Bilge \\ \texttt{armanbilge@gmail.com}}
-\date{16 April 2015}
+\date{17 April 2015}
 
 \frenchspacing
+\onehalfspacing
 \begin{document}
 
     \maketitle
@@ -57,8 +67,9 @@
     An \ac{MCMC} method whose
 
     The ideal sampling algorithm maximises the number of pseudo-independent
-        samples, called the \ac{ESS}, present in all of the samples drawn by
-        minimising the \ac{ACT}.
+        samples, called the \ac{ESS}, by minimising the \ac{ACT}.
+    For multidimensional distributions, the \ac{ESS} of the slowest-mixing
+        dimension is representative of the overall \ac{ESS}~\cite{Tho10}.
 
     Today, the amount of molecular data available grows rapidly, as does the
         complexity of the models used to analyse them.
@@ -87,7 +98,7 @@
         \end{align}
         which are integrated to find the state at a particular time.
     Typically this integration is achieved numerically using the leapfrog
-        method, a symplectic integrator~\cite{Nea11}.
+        method~\cite{Nea11}.
     I use $\op{L}\left\{\vec{q},\vec{p}\right\}$ to denote an operator that
         maps the state at time~$t$ to the state at time~$t + \epsilon L$, as
         approximated by $L$~leapfrog steps with stepsize~$\epsilon$.
@@ -96,17 +107,17 @@
          = \left\{\vec{q},-\vec{p}\right\}$.
     With the $\op{L}$ and $\op{F}$ operators we can reach a discrete set of
         states along an energy contour (subject only to errors in numerical
-        integration) and therefore the maximum potential energy (i.e., minimum
-        probability density) contour that is reachable is dictated by the
-        kinetic energy of the system.
+        integration).
     To guarantee ergodicity of the Markov chain, the momentum is randomised
         after each iteration of the algorithm by
-    \begin{equation}
-        \op{R}\left\{\vec{q},\vec{p}\right\} =
-        \left\{\vec{q}, \sqrt{1-\alpha}\vec{p} + \sqrt{\alpha}\vec{n}\right\},
-        \vec{n} \sim \norm\left(\vec{0}, \mat{M}\right).
-    \end{equation}
-
+        \begin{equation}
+            \op{R}\left\{\vec{q},\vec{p}\right\} =
+            \left\{\vec{q}, \sqrt{1-\alpha}\vec{p} + \sqrt{\alpha}\vec{n}\right\},
+            \vec{n} \sim \norm\left(\vec{0}, \mat{M}^{-1}\right),
+        \end{equation}
+        where $\norm\left(\vec{\mu},\mat{\Sigma}\right)$ is the multivariate
+        normal distribution with mean~$\vec{\mu}$ and covariance~$\mat{\Sigma}$.
+    Using these operators,
     \begin{algorithm}
         \caption{A single iteration of the \acl{HMC} algorithm that uses
                  Hamiltonian dynamics to make the proposal and the Metropolis
@@ -136,17 +147,37 @@
     I implemented the described \ac{HMC} algorithm in a fork of
         BEAST~v1.8~\cite{Dru+12}.
 
-    To enable evaluation of the gradient, I introduced a
-        \texttt{Differentiable} interface that defines a method
-        \texttt{differentiate()} that returns the gradient with respect to a
-        variable.
-    The existing \texttt{Likelihood} interface was then modified to extend
-        \texttt{Differentiable}.
+    To enable evaluation of the gradient of the potential energy, I added a
+        method \texttt{differentiate()} to the core \texttt{Likelihood}
+        interface and implemented it for the basic probability distributions,
+        coalescent and birth-death tree priors, and the Felsenstein tree
+        likelihood~\cite{Fel81}.
+    The tree likelihood implementation is optimised and makes use of the
+        high-performance library BEAGLE~\cite{Ayr+12}.
     The source code for my fork is freely available under version 3 of the GNU
-        General Public License at
-        \url{https://github.com/armanbilge/B3/tree/hamilton}.
+        General Public
+        Licence\footnote{\url{https://github.com/armanbilge/B3/tree/hamilton}}.
+
+    I simulated twenty random datasets under a constant size coalescent
 
     \subsection*{Results and Discussion}
+
+    \begin{figure}
+        \centering
+        \begin{subfigure}{0.45\textwidth}
+            \centering
+            \includegraphics[scale=0.8]{boxplot.pdf}
+            \caption{The efficiency of \ac{HMC} relative to \ac{MCMC}
+                     for ten simulated datasets.}
+        \end{subfigure}
+        \begin{subfigure}{0.45\textwidth}
+            \centering
+            \includegraphics[scale=0.8]{heatmap.pdf}
+            \caption{The efficiency of \ac{HMC} relative to \ac{MCMC}
+                         for various values of $L$ and $\alpha$
+                         for a particular 64-taxa dataset.}
+        \end{subfigure}
+    \end{figure}
 
     \printbibliography
 
