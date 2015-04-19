@@ -38,10 +38,10 @@
 \title{Implementing \acl{HMC} for Efficient Bayesian Evolutionary Analysis \\
            \Large\textsc{awc summer scholarship report}}
 \author{Arman Bilge \\ \texttt{armanbilge@gmail.com}}
-\date{17 April 2015}
+\date{20 April 2015}
 
 \frenchspacing
-\onehalfspacing
+%\onehalfspacing
 \begin{document}
 
     \maketitle
@@ -61,18 +61,9 @@
     Although direct sampling from this distribution is impossible, sampling
         strategies utilising \ac{MCMC} techniques have been quite
         successful~\cite{RH03,Dru+12,Bou+14}.
-
-    Constructing a Markov chain that
-
-    Thus, a proposal distribution that is the target distribution
-
     The ideal sampling algorithm maximises the number of pseudo-independent
-        samples, called the \ac{ESS}, by minimising the \ac{ACT}.
-    For multidimensional distributions, the \ac{ESS} of the slowest-mixing
-        dimension is representative of the overall \ac{ESS}~\cite{Tho10}.
-
-    Today, the amount of molecular data available grows rapidly, as does the
-        complexity of the models used to analyse them.
+        samples drawn, called the \ac{ESS}, by minimising the \ac{ACT}.
+    \ac{MCMC}
 
     \ac{HMC}, first described as hybrid Monte Carlo by \textcite{Dua+87},
 
@@ -117,7 +108,11 @@
         \end{equation}
         where $\norm{\vec{\mu},\mat{\Sigma}}$ is the multivariate
         normal distribution with mean~$\vec{\mu}$ and covariance~$\mat{\Sigma}$.
-    Using these operators,
+    When the parameter $\alpha < 1$ the momentum is only partially refreshed,
+        supressing random walk behaviour.
+    Using these operators, the \ac{HMC} algorithm is concisely described by
+        making $M$ calls to the \textsc{HamiltonUpdate} function given in
+        Algorithm~1.
     \begin{algorithm}
         \caption{A single iteration of the \acl{HMC} algorithm that uses
                  Hamiltonian dynamics to make the proposal and the Metropolis
@@ -146,7 +141,9 @@
 
     I implemented the described \ac{HMC} algorithm in a fork of
         BEAST~v1.8~\cite{Dru+12}.
-
+    In particular, I represented the \textsc{HamiltonUpdate} function as a
+        standard \ac{MCMC} operator whose Hastings ratio is the exponential of
+        the difference between the current and proposed kinetic energy.
     To enable evaluation of the gradient of the potential energy, I added a
         method \texttt{differentiate()} to the core \texttt{Likelihood}
         interface and implemented it for the basic probability distributions,
@@ -158,7 +155,19 @@
         General Public
         Licence\footnote{\url{https://github.com/armanbilge/B3/tree/hamilton}}.
 
-    I simulated twenty random datasets under a constant size coalescent
+    To evaluate the performance of \ac{HMC} relative to \ac{MCMC}I simulated
+        ten 32-taxa and ten 64-taxa datasets under the constant size coalescent
+        and HKY substitution model with a strict molecular clock ($n = 2048$,
+        $\theta = 0.5$, $\mu = 0.15$, $\kappa = 8.0$, $\vec{\pi} = \left[0.35,
+        0.30, 0.20, 0.15\right]$).
+    I fixed the tree topology and model parameters to the truth and performed
+        inference on the branch lengths using both \ac{MCMC} and \ac{HMC}.
+    The \ac{MCMC} operators and $\epsilon$ for \ac{HMC} were auto-optimised
+        during the analysis and nine different combinations were tried for
+        $\left(L, \alpha\right) \in \left\{4, 8, 16\right\} \times \left\{0.33, 0.66, 1.0\right\}$.
+    For optimal performance, the mass matrix $\mat{M}$ was set to the inverse
+        of the covariance matrix for each dataset~\cite{Nea11}.
+    I measured the performance of each algorithm as the \ac{ESS}
 
     \singlespacing
 
