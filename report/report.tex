@@ -63,7 +63,7 @@
         successful~\cite{Ron+12,Dru+12,Bou+14}.
     The ideal sampling algorithm maximises the number of pseudo-independent
         samples drawn, called the \ac{ESS}, by minimising the \ac{ACT}.
-    \ac{MCMC}
+    \ac{MCMC} generally performs poorly by this measure.
 
     \ac{HMC}, first described as hybrid Monte Carlo by \textcite{Dua+87},
         lends the important advantage the the proposal distribution is the
@@ -150,7 +150,7 @@
     To enable evaluation of the gradient of the potential energy, I added a
         method \texttt{differentiate()} to the core \texttt{Likelihood}
         interface and implemented it for the basic probability distributions,
-        coalescent and birth-death tree priors, and the Felsenstein tree
+        coalescent and birth--death tree priors, and the Felsenstein tree
         likelihood~\cite{Fel81}.
     The tree likelihood implementation is optimised and makes use of the
         high-performance library BEAGLE~\cite{Ayr+12}.
@@ -158,7 +158,7 @@
         General Public
         Licence\footnote{\url{https://github.com/armanbilge/B3/tree/hamilton}}.
 
-    To evaluate the performance of \ac{HMC} relative to \ac{MCMC} I simulated
+    To evaluate the performance of \ac{HMC} relative to \ac{MCMC}, I simulated
         ten 32-taxa and ten 64-taxa datasets under the constant size coalescent
         and HKY substitution model with a strict molecular clock ($n = 2048$,
         $\theta = 0.5$, $\mu = 0.15$, $\kappa = 8.0$,
@@ -167,8 +167,8 @@
         inference on the node heights using both \ac{MCMC} and \ac{HMC}.
     The \ac{MCMC} analysis used a auto-optimising scale operator on the root
         height and a uniform operator on all other node heights.
-    The for \ac{HMC} were auto-optimised
-        during the analysis and nine different combinations were tried for
+    The stepsize~$\epsilon$ for \ac{HMC} was auto-optimised during the analysis
+        and nine different combinations were tried for
         $\left(L, \alpha\right) \in \left\{4, 8, 16\right\} \times \left\{0.33, 0.66, 1.0\right\}$.
     For optimal performance, the mass matrix $\mat{M}$ was set to the inverse
         of the covariance matrix for each dataset~\cite{Nea11}.
