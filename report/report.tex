@@ -1,6 +1,6 @@
 \documentclass{article}
 
-\usepackage[margin=3cm]{geometry}
+\usepackage[margin=2.54cm]{geometry}
 \usepackage{setspace}
 
 \usepackage[british]{babel}
@@ -37,11 +37,10 @@
 
 \title{Implementing \acl{HMC} for Efficient Bayesian Evolutionary Analysis \\
            \Large\textsc{awc summer scholarship report}}
-\author{Arman Bilge \\ \texttt{armanbilge@gmail.com}}
-\date{20 April 2015}
+\author{Arman Bilge \\ \texttt{\href{mailto:armanbilge@gmail.com}{armanbilge@gmail.com}}}
+\date{22 April 2015}
 
 \frenchspacing
-%\onehalfspacing
 \begin{document}
 
     \maketitle
@@ -59,16 +58,24 @@
                 p\left(\mathcal{T} \mid \vec\theta\right) p\left(\vec\theta\right).
         \end{equation}
     Although direct sampling from this distribution is impossible, sampling
-        strategies utilising \ac{MCMC} techniques have been quite
+        strategies utilising \ac{MCMC} techniques~\cite{Met+53} have been quite
         successful~\cite{Ron+12,Dru+12,Bou+14}.
     The ideal sampling algorithm maximises the number of pseudo-independent
-        samples drawn, called the \ac{ESS}, by minimising the \ac{ACT}.
+        samples drawn, called the \ac{ESS}, by minimising the correlation
+        between consecutive samples.
     \ac{MCMC} generally performs poorly by this measure.
-
-    \ac{HMC}, first described as hybrid Monte Carlo by \textcite{Dua+87},
-        lends the important advantage the the proposal distribution is the
-        target distribution.
-    However, an \ac{HMC} proposal
+    Because the proposal distribution is ignorant of the target distribution,
+        \ac{MCMC} exhibits random-walk behaviour and requires several steps to
+        reach an uncorrelated sample~\cite{Nea11}.
+    \ac{HMC}, first described as hybrid Monte Carlo~\cite{Dua+87},
+        has the important advantage that the proposal distribution is the
+        target distribution, enabling large changes to be made with each step.
+    Computing an \ac{HMC} proposal involves solving a system of differential
+        equations which is substantially more time-consuming than an \ac{MCMC}
+        update.
+    However, \textcite{Nea11} showed that, in theory, \ac{HMC} will outperform
+        \ac{MCMC} as the problem dimensionality increases.
+    I applied \ac{HMC} to Bayesian evolutionary analysis
 
     \subsection*{Methods}
 
@@ -112,14 +119,14 @@
         where $\norm{\vec{\mu},\mat{\Sigma}}$ is the multivariate
         normal distribution with mean~$\vec{\mu}$ and covariance~$\mat{\Sigma}$.
     When the parameter $\alpha < 1$ the momentum is only partially refreshed,
-        further supressing random walk behaviour.
+        further suppressing random walk behaviour.
     Using these operators, the \ac{HMC} algorithm is concisely described by
-        making $M$ calls to the \textsc{HamiltonUpdate} function given in
+        making repeated calls to the \textsc{HamiltonUpdate} function given in
         Algorithm~1.
     \begin{algorithm}
         \caption{A single iteration of the \acl{HMC} algorithm that uses
                  Hamiltonian dynamics to make the proposal and the Metropolis
-                 criterion to accept or reject it.}
+                 criterion~\cite{Met+53} to accept or reject it.}
         \begin{algorithmic}[1]
         \Function {HamiltonUpdate}{$\left\{\vec{q},\vec{p}\right\}$}
             \State $\left\{\vec{q}^\prime, \vec{p}^\prime\right\}
@@ -159,9 +166,9 @@
         Licence\footnote{\url{https://github.com/armanbilge/B3/tree/hamilton}}.
 
     To evaluate the performance of \ac{HMC} relative to \ac{MCMC}, I simulated
-        ten 32-taxa and ten 64-taxa datasets under the constant size coalescent
-        and HKY substitution model with a strict molecular clock ($n = 2048$,
-        $\theta = 0.5$, $\mu = 0.15$, $\kappa = 8.0$,
+        ten 32-taxa, ten 64-taxa, and ten 128-taxa datasets under the constant
+        size coalescent and HKY substitution model with a strict molecular
+        clock ($n = 2048$, $\theta = 0.5$, $\mu = 0.15$, $\kappa = 8.0$,
         $\vec{\pi} = \left[0.35, 0.30, 0.20, 0.15\right]$).
     I fixed the tree topology and model parameters to the truth and performed
         inference on the node heights using both \ac{MCMC} and \ac{HMC}.
@@ -169,38 +176,40 @@
         height and a uniform operator on all other node heights.
     The stepsize~$\epsilon$ for \ac{HMC} was auto-optimised during the analysis
         and nine different combinations were tried for
-        $\left(L, \alpha\right) \in \left\{4, 8, 16\right\} \times \left\{0.33, 0.66, 1.0\right\}$.
+        $\left(L, \alpha\right) \in \left\{2, 4, 8\right\} \times \left\{0.33, 0.66, 1.0\right\}$.
     For optimal performance, the mass matrix $\mat{M}$ was set to the inverse
         of the covariance matrix for each dataset~\cite{Nea11}.
-    I measured the performance of each algorithm as the \ac{ESS} of the
-        worst-mixing dimension divided by the runtime, which is a
+    I measured the performance of each algorithm as the minimum \ac{ESS} of
+        all of the dimensions divided by the runtime, which is a
         theoretically-justifiable indicator of overall
         performance~\cite{Tho10}.
 
     \subsection*{Results and Discussion}
 
-    For both datasets \ac{HMC} showed better overall performance relative to
-        \ac{MCMC}.
+    In general, \ac{HMC} was either more efficient
 
-    It is also important to note that the \textsc{HamiltonUpdate} operator was
-        unrealistically well-optimised by the use of the covariance matrix.
-
-    Code profiling showed that over a third of runtime under the \ac{HMC}
-        algorithm was spent tracking which variables were changed and what
-        calculations need to be updated.
-    This is substantial overhead to the algorithm
+    Given that this application of \ac{HMC} depends on the gradient of several
+        non-trivial probability density functions, it is possible that there
+        are still bugs in my implementation.
+    The \ac{HMC} algorithm is very robust in the sense that errors in numerical
+        integration will not prevent it from converging to the target
+        distribution.
+    However, this property makes it very difficult to debug, as problems do not
+        affect correctness but only efficiency.
 
     \begin{figure}
         \centering
         \includegraphics[scale=0.8]{boxplot.pdf}
-        \caption{The efficiency of \ac{HMC} relative to \ac{MCMC}
-                    for ten simulated datasets.}
+        \caption{The efficiency of \ac{HMC} relative to \ac{MCMC} for the
+                 thirty simulated datasets. The best-performing combination of
+                 $L$ and $\alpha$ was taken as the representative \ac{HMC}
+                 performance.}
     \end{figure}
     \begin{figure}
         \centering
         \includegraphics[scale=0.8]{heatmap.pdf}
         \caption{The efficiency of \ac{HMC} relative to \ac{MCMC} for various
-                 values of $L$ and $\alpha$ for a particular 64-taxa dataset.
+                 values of $L$ and $\alpha$ for a particular 32-taxa dataset.
                  Magenta indicates that \ac{HMC} is more efficient and blue
                  otherwise.}
     \end{figure}
