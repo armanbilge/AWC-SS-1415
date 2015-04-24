@@ -75,7 +75,8 @@
         update.
     However, \textcite{Nea11} showed that, in theory, \ac{HMC} will outperform
         \ac{MCMC} as the problem dimensionality increases.
-    I applied \ac{HMC} to Bayesian evolutionary analysis
+    I applied \ac{HMC} to Bayesian evolutionary analysis and tested for
+        improved performance.
 
     \subsection*{Methods}
 
@@ -163,7 +164,7 @@
         high-performance library BEAGLE~\cite{Ayr+12}.
     The source code for my fork is freely available under version 3 of the GNU
         General Public
-        Licence\footnote{\url{https://github.com/armanbilge/B3/tree/hamilton}}.
+        Licence.\footnote{\url{https://github.com/armanbilge/B3/tree/hamilton}}
 
     To evaluate the performance of \ac{HMC} relative to \ac{MCMC}, I simulated
         ten 32-taxa, ten 64-taxa, and ten 128-taxa datasets under the constant
@@ -186,32 +187,57 @@
 
     \subsection*{Results and Discussion}
 
-    In general, \ac{HMC} was either more efficient
+    Overall, \ac{HMC} did not show the improved performance relative to
+        \ac{MCMC} expected with increasing dimensionality (Figure~1).
+    \ac{HMC} showed better performance than \ac{MCMC} only for some 32-taxa
+        datasets.
+    For 32 taxa, \ac{HMC} was consistently either at least as efficient or at
+        most as efficient as \ac{MCMC} regardless of the choice of $L$ and
+        $\alpha$.
+    The choice of $\alpha = 0.66$ did tend to be correlated with better
+        performance, probably because the partial momentum refreshment helps to
+        avoid random-walk behaviour (Figure~2).
 
-    Given that this application of \ac{HMC} depends on the gradient of several
-        non-trivial probability density functions, it is possible that there
-        are still bugs in my implementation.
+    A basic analysis in the style of \textcite{Nea11} suggests that,
+        theoretically, \ac{HMC} will scale worse than \ac{MCMC} in the worst
+        case.
+    Although it seems that practice is consistent with theory, it is important
+        to note that this analysis makes a number of assumptions that are
+        unlikely to hold true in general.
+    While it may be the case that a faithful implementation of \ac{HMC} will
+        not outperform \ac{MCMC}, this does not rule out the possibility that
+        some modification of \ac{HMC} will demonstrate better performance,
+        particularly those taking advantage of efficient numerical
+        approximations (e.g.,~\cite{CFG14}).
+    Finally, given that this application of \ac{HMC} depends on the gradient of
+        several non-trivial probability density functions, it is possible that
+        there are still bugs in my implementation affecting my results.
     The \ac{HMC} algorithm is very robust in the sense that errors in numerical
         integration will not prevent it from converging to the target
         distribution.
     However, this property makes it very difficult to debug, as problems do not
         affect correctness but only efficiency.
 
+    Although this specific project does not deliver a positive result, my
+        gradient implementations provide the foundation for developing
+        intelligent proposal distributions for Bayesian evolutionary analysis
+        using \ac{MCMC}.
+
     \begin{figure}
         \centering
         \includegraphics[scale=0.8]{boxplot.pdf}
         \caption{The efficiency of \ac{HMC} relative to \ac{MCMC} for the
                  thirty simulated datasets. The best-performing combination of
-                 $L$ and $\alpha$ was taken as the representative \ac{HMC}
-                 performance.}
+                 $L$ and $\alpha$ for a dataset was taken as the representative
+                 for \ac{HMC} performance.}
     \end{figure}
     \begin{figure}
         \centering
         \includegraphics[scale=0.8]{heatmap.pdf}
         \caption{The efficiency of \ac{HMC} relative to \ac{MCMC} for various
                  values of $L$ and $\alpha$ for a particular 32-taxa dataset.
-                 Magenta indicates that \ac{HMC} is more efficient and blue
-                 otherwise.}
+                 Scale is from more efficient in magenta to less efficient in
+                 blue through equal efficiency in white.}
     \end{figure}
 
     \printbibliography
